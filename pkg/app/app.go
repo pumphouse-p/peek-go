@@ -25,7 +25,7 @@ func NewApp() *App {
 
 	app.env = env.New()
 
-	app.router.HandleFunc("/env", app.env.APIGet)
+	app.router.HandleFunc("/api/env", app.env.APIGet)
 
 	return app
 }

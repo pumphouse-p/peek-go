@@ -6,11 +6,13 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/pumphouse-p/peek-go/pkg/env"
+	"github.com/pumphouse-p/peek-go/pkg/net"
 )
 
 type App struct {
 	config Config
 	env    *env.Env
+	net    *net.Net
 	router *mux.Router
 }
 
@@ -26,6 +28,7 @@ func NewApp() *App {
 	app.env = env.New()
 
 	app.router.HandleFunc("/api/env", app.env.APIGet)
+	app.router.HandleFunc("/api/net", app.net.APIGet)
 
 	return app
 }

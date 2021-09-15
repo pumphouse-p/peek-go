@@ -33,6 +33,7 @@ func NewApp() *App {
 	app.router.HandleFunc("/api/net", app.net.APIGet)
 	app.router.HandleFunc("/api/cpu", app.runtime.APIGetCPU)
 	app.router.HandleFunc("/api/mem", app.runtime.APIGetMem)
+	app.router.HandleFunc("/api/storage", app.runtime.APIGetStorage)
 	app.router.HandleFunc("/api/runtime", app.runtime.APIGetRuntime)
 
 	return app

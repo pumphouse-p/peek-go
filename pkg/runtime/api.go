@@ -3,6 +3,7 @@ package runtime
 import (
 	"net/http"
 
+	"github.com/google/fscrypt/filesystem"
 	"github.com/pumphouse-p/peek-go/pkg/apiutils"
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/mem"
@@ -29,13 +30,6 @@ type CPUStatus struct {
 	CoreUsed      []float64       `json:"core_used"`
 	PhysicalCores int             `json:"physical_cores"`
 	LogicalCores  int             `json:"logical_cores"`
-}
-
-type MemStats struct {
-	Total       uint64  `json:"total"`
-	Available   uint64  `json:"available"`
-	Used        uint64  `json:"used"`
-	UsedPercent float64 `json:"used_percent"`
 }
 
 func initCPUProperties() (cp []CPUProperties) {
@@ -70,6 +64,13 @@ func (cs *CPUStatus) Init() {
 	cs.LogicalCores, _ = cpu.Counts(true)
 }
 
+type MemStats struct {
+	Total       uint64  `json:"total"`
+	Available   uint64  `json:"available"`
+	Used        uint64  `json:"used"`
+	UsedPercent float64 `json:"used_percent"`
+}
+
 func (ms *MemStats) Init() {
 	vm, _ := mem.VirtualMemory()
 	ms.Total = vm.Total
@@ -78,9 +79,38 @@ func (ms *MemStats) Init() {
 	ms.UsedPercent = vm.UsedPercent
 }
 
+type Filesystem struct {
+	Path         string `json:"path"`
+	FSType       string `json:"fs_type"`
+	Device       string `json:"device"`
+	DeviceNumber string `json:"device_number"`
+	Subtree      string `json:"subtree"`
+	ReadOnly     bool   `json:"readonly"`
+}
+
+type FilesystemStatus struct {
+	Filesystems []Filesystem `json:"filesystems"`
+}
+
+func (fs *FilesystemStatus) Init() {
+	fss, _ := filesystem.AllFilesystems()
+
+	for _, f := range fss {
+		t := Filesystem{}
+		t.Path = f.Path
+		t.FSType = f.FilesystemType
+		t.Device = f.Device
+		t.DeviceNumber = f.DeviceNumber.String()
+		t.Subtree = f.Subtree
+		t.ReadOnly = f.ReadOnly
+		fs.Filesystems = append(fs.Filesystems, t)
+	}
+}
+
 type RuntimeStatus struct {
-	CPU CPUStatus `json:"cpu"`
-	Mem MemStats  `json:"mem"`
+	CPU CPUStatus        `json:"cpu"`
+	Mem MemStats         `json:"mem"`
+	Fs  FilesystemStatus `json:"storage"`
 }
 
 type Runtime struct{}
@@ -101,6 +131,13 @@ func (rt *Runtime) APIGetMem(w http.ResponseWriter, r *http.Request) {
 	ms.Init()
 
 	apiutils.ServeJSON(w, ms)
+}
+
+func (rt *Runtime) APIGetStorage(w http.ResponseWriter, r *http.Request) {
+	s := FilesystemStatus{}
+	s.Init()
+
+	apiutils.ServeJSON(w, s)
 }
 
 func (rt *Runtime) APIGetRuntime(w http.ResponseWriter, r *http.Request) {

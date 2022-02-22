@@ -34,7 +34,7 @@
         workdir: /usr/src/{{ app_name }}
         command: go build -v
         state: started
-        restart_policy: false
+        restart_policy: no
         rm: true
       register: build_container
 

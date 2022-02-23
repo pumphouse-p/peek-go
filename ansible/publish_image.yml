@@ -15,3 +15,11 @@
         name: "{{ container_image_repo }}"
         path: "{{ golang_app_workspace }}"
         tag: "{{ _app_repo.after }}"
+
+    - name: Publish image
+      containers.podman.podman_image:
+        name: "{{ container_image_repo }}"
+        tag: "{{ _app_repo.after }}"
+        push: true
+        username: "{{ lookup('env', 'IMAGE_REGISTRY_USERNAME') }}"
+        password: "{{ lookup('env', 'IMAGE_REGISTRY_PASSWORD') }}"

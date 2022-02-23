@@ -2,8 +2,6 @@
 - name: "CI build/publish image : {{ app_name }}"
   hosts: all
   become: false
-  vars_files:
-    - ci_vars.yml
 
   tasks:
     - name: Build image

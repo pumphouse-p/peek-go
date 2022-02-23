@@ -36,7 +36,7 @@
         state: started
         interactive: true
         tty: true
-        # rm: true
+        recreate: true
       register: build_container
 
     - name: "Run tests : {{ app_name }}"
@@ -50,5 +50,5 @@
         state: started
         interactive: true
         tty: true
-        # rm: true
+        recreate: true
       register: test_container

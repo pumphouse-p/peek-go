@@ -30,7 +30,7 @@
         name: "{{ app_name }}-build"
         image: "{{ container_image }}"
         volume:
-          - "{{ golang_app_workspace }}:/usr/src/{{ app_name }}"
+          - "{{ golang_app_workspace }}:/usr/src/{{ app_name }}:Z"
         workdir: /usr/src/{{ app_name }}/cmd/peek-go
         command: go build -v
         state: started
@@ -44,7 +44,7 @@
         name: "{{ app_name }}-test"
         image: "{{ container_image }}"
         volume:
-          - "{{ golang_app_workspace }}:/usr/src/{{ app_name }}"
+          - "{{ golang_app_workspace }}:/usr/src/{{ app_name }}:Z"
         workdir: /usr/src/{{ app_name }}
         command: go test -v ./...
         state: started

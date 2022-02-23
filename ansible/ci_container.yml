@@ -39,16 +39,21 @@
         recreate: true
       register: build_container
 
-    - name: "Run tests : {{ app_name }}"
-      containers.podman.podman_container:
-        name: "{{ app_name }}-test"
-        image: "{{ container_image }}"
-        volume:
-          - "{{ golang_app_workspace }}:/usr/src/{{ app_name }}:Z"
-        workdir: /usr/src/{{ app_name }}
-        command: go test -v ./...
-        state: started
-        interactive: true
-        tty: true
-        recreate: true
-      register: test_container
+    - name: "Wait for build to complete"
+      wait_for:
+        path: "{{ golang_app_workspace }}/cmd/peek-go/peek-go"
+        timeout: 30
+
+      #    - name: "Run tests : {{ app_name }}"
+      #      containers.podman.podman_container:
+      #  name: "{{ app_name }}-test"
+      #  image: "{{ container_image }}"
+      #  volume:
+      #    - "{{ golang_app_workspace }}:/usr/src/{{ app_name }}:Z"
+      #  workdir: /usr/src/{{ app_name }}
+      #  command: go test -v ./...
+      #  state: started
+      #  interactive: true
+      #  tty: true
+      #  recreate: true
+      # register: test_container

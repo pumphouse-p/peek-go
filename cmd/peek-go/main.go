@@ -15,6 +15,7 @@ import (
 func main() {
 	app := app.NewApp()
 	<broken>
+	<broken_again>
 
 	v := viper.GetViper()
 

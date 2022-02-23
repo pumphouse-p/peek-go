@@ -1,7 +1,7 @@
 ---
 app_name: peek-go
 app_repo_url: https://github.com/pumphouse-p/peek-go
-app_repo_refspec: "{{ tower_webhook_payload.ref }}"
+app_repo_refspec: "{{ tower_webhook_payload.ref | default(omit) }}"
 app_repo_branch: master
 golang_version: 1.16.14
 golang_workspace: "{{ ansible_env.HOME }}/go/src"

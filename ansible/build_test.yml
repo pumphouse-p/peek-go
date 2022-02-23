@@ -3,7 +3,7 @@
   hosts: all
   become: false
   vars_files:
-    - ci_vars.yml
+    - ./ci_vars.yml
 
   tasks:
     - name: Create workspace directory

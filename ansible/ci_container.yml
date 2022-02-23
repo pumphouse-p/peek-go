@@ -34,7 +34,9 @@
         workdir: /usr/src/{{ app_name }}/cmd/peek-go
         command: go build -v
         state: started
-        rm: true
+        interactive: true
+        tty: true
+        # rm: true
       register: build_container
 
     - name: "Run tests : {{ app_name }}"
@@ -46,5 +48,7 @@
         workdir: /usr/src/{{ app_name }}
         command: go test -v ./...
         state: started
-        rm: true
+        interactive: true
+        tty: true
+        # rm: true
       register: test_container

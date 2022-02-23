@@ -1,16 +1,9 @@
 ---
-- name: "CI : {{ app_name }}"
+- name: "CI build/test : {{ app_name }}"
   hosts: all
   become: false
-  vars:
-    app_name: peek-go
-    app_repo_url: https://github.com/pumphouse-p/peek-go
-    app_repo_branch: devel
-    golang_version: 1.16.14
-    golang_workspace: "{{ ansible_env.HOME }}/go/src"
-    golang_app_workspace: "{{ golang_workspace }}/{{ app_name }}"
-    container_base: buster
-    container_image: "golang:{{ golang_version}}-{{ container_base }}"
+  vars_files:
+    - ci_vars.yml
 
   tasks:
     - name: Create workspace directory
@@ -29,11 +22,12 @@
         repo: "{{ app_repo_url }}"
         version: "{{ app_repo_branch }}"
         dest: "{{ golang_app_workspace }}"
+      register: _app_repo
 
     - name: "Build : {{ app_name }}"
       containers.podman.podman_container:
         name: "{{ app_name }}-build"
-        image: "{{ container_image }}"
+        image: "{{ build_container_image }}"
         volume:
           - "{{ golang_app_workspace }}:/usr/src/{{ app_name }}:Z"
         workdir: /usr/src/{{ app_name }}/cmd/peek-go
@@ -52,7 +46,7 @@
     - name: "Run tests : {{ app_name }}"
       containers.podman.podman_container:
         name: "{{ app_name }}-test"
-        image: "{{ container_image }}"
+        image: "{{ build_container_image }}"
         volume:
           - "{{ golang_app_workspace }}:/usr/src/{{ app_name }}:Z"
         workdir: /usr/src/{{ app_name }}
@@ -62,3 +56,8 @@
         tty: true
         recreate: true
       register: test_container
+
+    - name: "Set stats for downstream consumption"
+      ansible.builtin.set_stats:
+        data:
+          _app_repo: "{{ _app_repo }}"

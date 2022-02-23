@@ -1,0 +1,13 @@
+---
+- name: "CI build/publish image : {{ app_name }}"
+  hosts: all
+  become: false
+  vars_files:
+    - ci_vars.yml
+
+  tasks:
+    - name: Build image
+      containers.podman.podman_image:
+        name: "{{ container_image_repo }}"
+        path: "{{ golang_app_workspace }}"
+        tag: "{{ _app_repo.after }}"

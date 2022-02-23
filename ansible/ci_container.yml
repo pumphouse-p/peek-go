@@ -9,7 +9,7 @@
     golang_version: 1.16.14
     golang_workspace: "{{ ansible_env.HOME }}/go/src"
     golang_app_workspace: "{{ golang_workspace }}/{{ app_name }}"
-    container_base: alpine
+    container_base: buster
     container_image: "golang:{{ golang_version}}-{{ container_base }}"
 
   tasks:
@@ -36,6 +36,9 @@
         state: started
         rm: true
       register: build_container
+
+    - name: "Build results : {{ app_name }}"
+
 
     - name: "Run tests : {{ app_name }}"
       containers.podman.podman_container:

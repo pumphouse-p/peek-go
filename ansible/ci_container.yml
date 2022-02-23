@@ -24,6 +24,7 @@
         repo: "{{ app_repo_url }}"
         version: "{{ app_repo_branch }}"
         dest: "{{ golang_app_workspace }}"
+        force: true
 
     - name: "Build : {{ app_name }}"
       containers.podman.podman_container:

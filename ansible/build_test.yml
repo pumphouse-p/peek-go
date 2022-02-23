@@ -20,8 +20,9 @@
     - name: Clone repository
       ansible.builtin.git:
         repo: "{{ app_repo_url }}"
-        version: "{{ app_repo_branch }}"
         dest: "{{ golang_app_workspace }}"
+        version: "{{ app_repo_branch }}"
+        refspec: "{{ app_repo_refspec }}"
       register: _app_repo
 
     - name: "Build : {{ app_name }}"

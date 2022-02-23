@@ -2,6 +2,16 @@
 - name: "CI build/publish image : {{ app_name }}"
   hosts: all
   become: false
+  vars:
+    app_name: peek-go
+    app_repo_url: https://github.com/pumphouse-p/peek-go
+    app_repo_branch: devel
+    golang_version: 1.16.14
+    golang_workspace: "{{ ansible_env.HOME }}/go/src"
+    golang_app_workspace: "{{ golang_workspace }}/{{ app_name }}"
+    build_container_base: buster
+    build_container_image: "golang:{{ golang_version}}-{{ container_base }}"
+    container_image_repo: quay.io/deparris/peek-go
 
   tasks:
     - name: Build image

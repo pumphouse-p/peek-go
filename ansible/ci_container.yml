@@ -27,7 +27,7 @@
 
     - name: "Build : {{ app_name }}"
       containers.podman.podman_container:
-        name: "{{ app_name }}-ci"
+        name: "{{ app_name }}-build"
         image: "{{ container_image }}"
         volume:
           - "{{ golang_app_workspace }}:/usr/src/{{ app_name }}"
@@ -41,7 +41,7 @@
 
     - name: "Run tests : {{ app_name }}"
       containers.podman.podman_container:
-        name: "{{ app_name }}-ci"
+        name: "{{ app_name }}-test"
         image: "{{ container_image }}"
         volume:
           - "{{ golang_app_workspace }}:/usr/src/{{ app_name }}"

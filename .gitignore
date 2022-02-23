@@ -6,3 +6,5 @@ _obj
 _test
 
 *.swp
+
+cmd/peek-go/peek-go

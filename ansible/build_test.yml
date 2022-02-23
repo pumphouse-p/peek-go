@@ -1,0 +1,63 @@
+---
+- name: "CI build/test : {{ app_name }}"
+  hosts: all
+  become: false
+  vars_files:
+    - ci_vars.yml
+
+  tasks:
+    - name: Create workspace directory
+      ansible.builtin.file:
+        path: "{{ golang_workspace }}/go/src"
+        state: directory
+        mode: 0755
+
+    - name: Ensure clean app workspace
+      ansible.builtin.file:
+        path: "{{ golang_app_workspace }}"
+        state: absent
+
+    - name: Clone repository
+      ansible.builtin.git:
+        repo: "{{ app_repo_url }}"
+        version: "{{ app_repo_branch }}"
+        dest: "{{ golang_app_workspace }}"
+      register: _app_repo
+
+    - name: "Build : {{ app_name }}"
+      containers.podman.podman_container:
+        name: "{{ app_name }}-build"
+        image: "{{ build_container_image }}"
+        volume:
+          - "{{ golang_app_workspace }}:/usr/src/{{ app_name }}:Z"
+        workdir: /usr/src/{{ app_name }}/cmd/peek-go
+        command: go build -v
+        state: started
+        interactive: true
+        tty: true
+        recreate: true
+      register: build_container
+
+    - name: "Wait for build to complete"
+      wait_for:
+        path: "{{ golang_app_workspace }}/cmd/peek-go/peek-go"
+        timeout: 30
+
+    - name: "Run tests : {{ app_name }}"
+      containers.podman.podman_container:
+        name: "{{ app_name }}-test"
+        image: "{{ build_container_image }}"
+        volume:
+          - "{{ golang_app_workspace }}:/usr/src/{{ app_name }}:Z"
+        workdir: /usr/src/{{ app_name }}
+        command: go test -v ./...
+        state: started
+        interactive: true
+        tty: true
+        recreate: true
+      register: test_container
+
+    - name: "Set stats for downstream consumption"
+      ansible.builtin.set_stats:
+        data:
+          _app_repo: "{{ _app_repo }}"

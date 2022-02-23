@@ -37,9 +37,6 @@
         rm: true
       register: build_container
 
-    - name: "Build results : {{ app_name }}"
-
-
     - name: "Run tests : {{ app_name }}"
       containers.podman.podman_container:
         name: "{{ app_name }}-ci"

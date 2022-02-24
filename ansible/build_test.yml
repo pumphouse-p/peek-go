@@ -86,6 +86,14 @@
       ansible.builtin.debug:
         msg: "{{ test_container_logs.stdout.split('\n') }}"
 
+    - name: "Cleanup containers"
+      containers.podman.podman_container:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ build_container_name }}"
+        - "{{ test_container_name }}"
+
     - name: "Set stats for downstream consumption"
       ansible.builtin.set_stats:
         data:

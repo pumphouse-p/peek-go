@@ -27,7 +27,7 @@
 
     - name: "Build : {{ app_name }}"
       containers.podman.podman_container:
-        name: "{{ app_name }}-build"
+        name: "{{ build_container_name }}"
         image: "{{ build_container_image }}"
         volume:
           - "{{ golang_app_workspace }}:/usr/src/{{ app_name }}:Z"
@@ -52,11 +52,12 @@
 
     - name: "Output build container logs"
       ansible.builtin.debug:
-        msg: "{{ build_container_logs.stdout }}"
+        msg: "{{ item }}"
+      loop: "{{ build_container_logs.stdout_lines }}"
 
     - name: "Run tests : {{ app_name }}"
       containers.podman.podman_container:
-        name: "{{ app_name }}-test"
+        name: "{{ test_container_name }}"
         image: "{{ build_container_image }}"
         volume:
           - "{{ golang_app_workspace }}:/usr/src/{{ app_name }}:Z"
@@ -68,6 +69,12 @@
         recreate: true
       register: test_container
 
+    - name: "Wait for tests to complete"
+      ansible.builtin.assert:
+        that: "{{ test_container.State.Running }} is false"
+      retries: 10
+      delay: 5
+
     - name: "Collect logs from {{ test_container_name }}"
       ansible.builtin.command:
         cmd: podman logs {{ test_container_name }}
@@ -76,7 +83,8 @@
 
     - name: "Output test container logs"
       ansible.builtin.debug:
-        msg: "{{ test_container_logs.stdout }}"
+        msg: "{{ item }}"
+      loop: "{{ test_container_logs.stdout_lines }}"
 
     - name: "Set stats for downstream consumption"
       ansible.builtin.set_stats:

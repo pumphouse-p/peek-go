@@ -52,8 +52,7 @@
 
     - name: "Output build container logs"
       ansible.builtin.debug:
-        msg: "{{ item }}"
-      loop: "{{ build_container_logs.stdout_lines }}"
+        msg: "{{ build_container_logs.stdout.split('\n') }}"
 
     - name: "Run tests : {{ app_name }}"
       containers.podman.podman_container:
@@ -85,8 +84,7 @@
 
     - name: "Output test container logs"
       ansible.builtin.debug:
-        msg: "{{ item }}"
-      loop: "{{ test_container_logs.stdout_lines }}"
+        msg: "{{ test_container_logs.stdout.split('\n') }}"
 
     - name: "Set stats for downstream consumption"
       ansible.builtin.set_stats:

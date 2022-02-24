@@ -44,6 +44,16 @@
         path: "{{ golang_app_workspace }}/cmd/peek-go/peek-go"
         timeout: 30
 
+    - name: "Collect logs from {{ build_container_name }}"
+      ansible.builtin.command:
+        cmd: podman logs {{ build_container_name }}
+      changed_when: false
+      register: build_container_logs
+
+    - name: "Output build container logs"
+      ansible.builtin.debug:
+        msg: "{{ build_container_logs.stdout }}"
+
     - name: "Run tests : {{ app_name }}"
       containers.podman.podman_container:
         name: "{{ app_name }}-test"
@@ -57,6 +67,16 @@
         tty: true
         recreate: true
       register: test_container
+
+    - name: "Collect logs from {{ test_container_name }}"
+      ansible.builtin.command:
+        cmd: podman logs {{ test_container_name }}
+      changed_when: false
+      register: test_container_logs
+
+    - name: "Output test container logs"
+      ansible.builtin.debug:
+        msg: "{{ test_container_logs.stdout }}"
 
     - name: "Set stats for downstream consumption"
       ansible.builtin.set_stats:

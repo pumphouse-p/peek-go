@@ -8,4 +8,6 @@ golang_workspace: "{{ ansible_env.HOME }}/go/src"
 golang_app_workspace: "{{ golang_workspace }}/{{ app_name }}"
 build_container_base: buster
 build_container_image: "golang:{{ golang_version}}-{{ build_container_base }}"
+build_container_name: "{{ app_name }}-build"
+test_container_name: "{{ app_name }}-test"
 container_image_repo: quay.io/deparris/peek-go

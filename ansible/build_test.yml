@@ -70,10 +70,12 @@
       register: test_container
 
     - name: "Wait for tests to complete"
-      ansible.builtin.assert:
-        that: "{{ test_container.State.Running }} is false"
+      containers.podman.podman_container_info:
+        name: "{{ test_container_name }}"
+      register: test_container_status
       retries: 10
       delay: 5
+      until: "{{ test_container_status.container.State.Running }} is false"
 
     - name: "Collect logs from {{ test_container_name }}"
       ansible.builtin.command:

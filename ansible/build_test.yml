@@ -75,7 +75,7 @@
       register: test_container_status
       retries: 10
       delay: 5
-      until: "{{ test_container_status.container.State.Running }} is false"
+      until: test_container_status.container.State.Running is false
 
     - name: "Collect logs from {{ test_container_name }}"
       ansible.builtin.command:

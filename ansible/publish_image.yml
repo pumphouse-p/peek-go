@@ -6,10 +6,6 @@
     - ci_vars.yml
 
   tasks:
-    - name: Print env
-      ansible.builtin.debug:
-        msg: "{{ ansible_env }}"
-
     - name: Build image
       containers.podman.podman_image:
         name: "{{ container_image_repo }}"

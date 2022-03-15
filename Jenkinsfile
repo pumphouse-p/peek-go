@@ -5,6 +5,11 @@ pipeline {
     go "golang-1.16.14"
   }
 
+  parameters {
+    string(name: 'IMAGE_REGISTRY_USERNAME', defaultValue: '', description: 'Username for target image registry')
+    password(name: 'IMAGE_REGISTRY_PASSWORD', defaultValue: '', description: 'Password for target image registry')
+  }
+
   stages {
     stage('Build') {
       steps {
@@ -27,7 +32,7 @@ pipeline {
     stage('Publish Release') {
       steps {
         echo 'Publishing Image...'
-        sh "buildah push --creds ${IMAGE_REGISTRY_USERNAME}:${IMAGE_REGISTRY_PASSWORD} quay.io/deparris/peek-go:jenkins"
+        sh "buildah push --creds ${params.IMAGE_REGISTRY_USERNAME}:${params.IMAGE_REGISTRY_PASSWORD} quay.io/deparris/peek-go:jenkins"
       }
     }
   }

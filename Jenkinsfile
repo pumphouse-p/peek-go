@@ -11,6 +11,12 @@ pipeline {
   }
 
   stages {
+    state('Debug') {
+      steps {
+        echo "IMAGE_REGISTRY_USERNAME = ${params.IMAGE_REGISTRY_USERNAME}"
+        echo "IMAGE_REGISTRY_PASSWORD = ${params.IMAGE_REGISTRY_PASSWORD}"
+      }
+    }
     stage('Build') {
       steps {
         echo 'Building...'

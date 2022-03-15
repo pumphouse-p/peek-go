@@ -9,7 +9,7 @@ pipeline {
     stage('Build') {
       steps {
         echo 'Building...'
-        sh "go build"
+        sh "go build ./cmd/peek-go/"
       }
     }
     stage('Test') {

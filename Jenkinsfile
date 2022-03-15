@@ -18,9 +18,10 @@ pipeline {
         sh "go test ./..."
       }
     }
-    stage('Deploy') {
+    stage('Build Release') {
       steps {
-        echo 'Deploying...'
+        echo 'Building Image...'
+        sh "buildah bud -t quay.io/deparris/peek-go:jenkins"
       }
     }
   }

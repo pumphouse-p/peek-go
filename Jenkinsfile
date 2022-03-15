@@ -24,5 +24,9 @@ pipeline {
         sh "buildah bud -t quay.io/deparris/peek-go:jenkins"
       }
     }
+    stage('Publish Release') {
+      steps {
+        echo "Publishing Image...'
+        sh "buildah push --creds ${IMAGE_REGISTRY_USERNAME}:${IMAGE_REGISTRY_PASSWORD} quay.io/deparris/peek-go:jenkins"
   }
 }

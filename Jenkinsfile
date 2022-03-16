@@ -69,7 +69,7 @@ pipeline {
         echo '================================================================================'
         echo ''
         
-        sh "buildah push --creds ${IMAGE_REGISTRY_USR}:${IMAGE_REGISTRY_PSW} -t quay.io/deparris/peek-go:jenkins"
+        sh 'buildah push --creds "${IMAGE_REGISTRY_USR}":"${IMAGE_REGISTRY_PSW}" -t quay.io/deparris/peek-go:jenkins'
 
         echo ''
         echo '================================================================================'

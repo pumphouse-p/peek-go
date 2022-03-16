@@ -59,7 +59,7 @@ pipeline {
     }
     stage('Publish Release Image') {
       environment {
-        IMAGE_REGISTRY = credentials(params.IMAGE_REGISTRY_CREDENTIALS)
+        IMAGE_REGISTRY = credentials("${params.IMAGE_REGISTRY_CREDENTIALS}")
       }
 
       steps {

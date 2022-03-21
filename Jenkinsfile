@@ -41,6 +41,10 @@ pipeline {
       }
     }
     stage('Build Release Image') {
+      environment {
+        IMAGE_ID = "${params.IMAGE_ID}"
+      }
+
       steps {
         echo ''
         echo '================================================================================'
@@ -48,7 +52,7 @@ pipeline {
         echo '================================================================================'
         echo ''
         
-        sh "buildah bud -t quay.io/deparris/peek-go:jenkins"
+        sh 'buildah bud -t "${IMAGE_ID}"'
 
         echo ''
         echo '================================================================================'

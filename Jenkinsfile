@@ -60,6 +60,7 @@ pipeline {
     stage('Publish Release Image') {
       environment {
         IMAGE_REGISTRY = credentials("${params.IMAGE_REGISTRY_CREDENTIALS}")
+        IMAGE_ID = "${params.IMAGE_ID}"
       }
 
       steps {
@@ -69,7 +70,7 @@ pipeline {
         echo '================================================================================'
         echo ''
         
-        sh 'buildah push --creds "${IMAGE_REGISTRY_USR}":"${IMAGE_REGISTRY_PSW}" quay.io/deparris/peek-go:jenkins'
+        sh 'buildah push --creds "${IMAGE_REGISTRY_USR}":"${IMAGE_REGISTRY_PSW}" "${IMAGE_ID}"'
 
         echo ''
         echo '================================================================================'

@@ -8,6 +8,7 @@ import (
 	"github.com/pumphouse-p/peek-go/pkg/env"
 	"github.com/pumphouse-p/peek-go/pkg/net"
 	"github.com/pumphouse-p/peek-go/pkg/runtime"
+	"github.com/pumphouse-p/peek-go/pkg/version"
 )
 
 type App struct {
@@ -15,6 +16,7 @@ type App struct {
 	env     *env.Env
 	net     *net.Net
 	runtime *runtime.Runtime
+	version *version.Version
 	router  *mux.Router
 }
 
@@ -35,6 +37,7 @@ func NewApp() *App {
 	app.router.HandleFunc("/api/mem", app.runtime.APIGetMem)
 	app.router.HandleFunc("/api/storage", app.runtime.APIGetStorage)
 	app.router.HandleFunc("/api/runtime", app.runtime.APIGetRuntime)
+	app.router.HandleFunc("/api/version", app.version.APIGet)
 
 	return app
 }

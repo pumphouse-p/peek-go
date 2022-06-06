@@ -6,7 +6,7 @@ import (
 	"github.com/pumphouse-p/peek-go/pkg/apiutils"
 )
 
-var VERSION = "JENKINS"
+var VERSION = "JENKINS_V1"
 
 type VersionStatus struct {
 	Version string `json:"version"`
